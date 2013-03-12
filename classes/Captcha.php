@@ -424,20 +424,20 @@ abstract class Captcha
 	/**
 	 * Returns the img html element or outputs the image to the browser.
 	 *
-	 * @param boolean $html Output as HTML
+	 * @param mixed $response response object or NULL
 	 * @return mixed HTML, string or void
 	 */
-	public function image_render($html)
+	public function image_render($response = NULL)
 	{
 		// Output html element
-		if ($html === TRUE)
+		if ( ! $response instanceof Response)
 			return '<img src="'.url::site('captcha/'.Captcha::$config['group']).'" width="'.Captcha::$config['width'].'" height="'.Captcha::$config['height'].'" alt="Captcha" class="captcha" />';
 
 		// Send the correct HTTP header
-		$this->_get_request()->response()->headers('Content-Type', 'image/'.$this->image_type);
-		$this->_get_request()->response()->headers('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-		$this->_get_request()->response()->headers('Pragma', 'no-cache');
-		$this->_get_request()->response()->headers('Connection', 'close');
+		$response->headers('Content-Type', 'image/'.$this->image_type);
+		$response->headers('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+		$response->headers('Pragma', 'no-cache');
+		$response->headers('Connection', 'close');
 
 		// Pick the correct output function
 		$function = 'image'.$this->image_type;
@@ -450,37 +450,21 @@ abstract class Captcha
 	/**
 	 * Return multiversional config
 	 * @param string $group
-	 * @return Array 
+	 * @return Array
 	 */
 	protected static function _get_config($group = 'default') {
-		
+
 		$version = Kohana_Core::VERSION;
-		
+
 		if (version_compare($version, '3.2.0') >= 0) {
 			$config = Kohana::$config->load('captcha')->get($group);
 		} else {
 			$config = Kohana::config('captcha')->get($group);
 		}
-		
+
 		return $config;
 	}
-	
-	/**
-	 *	Return multiversional request
-	 * @return Request 
-	 */
-	protected function _get_request() {
-		
-		$version = Kohana_Core::VERSION;
-		
-		if (version_compare($version, '3.2.0') >= 0) {
-			$request = Request::initial();
-		} else {
-			$request = Request::instance();
-		}
-		
-		return $request;
-	}
+
 	/* DRIVER METHODS */
 
 	/**
