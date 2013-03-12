@@ -9,7 +9,7 @@
  * @copyright	(c) 2008-2010 Kohana Team
  * @license		http://kohanaphp.com/license.html
  */
-class Captcha_Basic extends Captcha 
+class Captcha_Basic extends Captcha
 {
 	/**
 	 * Generates a new Captcha challenge.
@@ -20,7 +20,7 @@ class Captcha_Basic extends Captcha
 	{
 		// Complexity setting is used as character count
 		$text = text::random('distinct', max(1, Captcha::$config['complexity']));
-		
+
 		return $text;
 	}
 
